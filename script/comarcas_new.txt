@@ -1,0 +1,272 @@
+comarca,entrancia
+Araçatuba,FINAL
+Araraquara,FINAL
+Barueri,FINAL
+Bauru,FINAL
+Campinas,FINAL
+Diadema,FINAL
+Franca,FINAL
+Guarulhos,FINAL
+Jundiaí,FINAL
+Limeira,FINAL
+Marília,FINAL
+Mogi das Cruzes,FINAL
+Osasco,FINAL
+Piracicaba,FINAL
+Praia Grande,FINAL
+Presidente Prudente,FINAL
+Ribeirão Preto,FINAL
+Santo André,FINAL
+Santos,FINAL
+São Bernardo do Campo,FINAL
+São Carlos,FINAL
+São José dos Campos,FINAL
+São José do Rio Preto,FINAL
+São Paulo,FINAL
+São Vicente,FINAL
+Sorocaba,FINAL
+Taubaté,FINAL
+Americana,INTER
+Andradina,INTER
+Araras,INTER
+Assis,INTER
+Atibaia,INTER 
+Avaré,INTER
+Barretos,INTER
+Bebedouro,INTER
+Birigui,INTER
+Botucatu,INTER
+Bragança Paulista,INTER
+Caraguatatuba,INTER
+Carapicuíba,INTER
+Catanduva,INTER
+Cotia,INTER
+Cubatão,INTER
+Embu,INTER
+Fernandópolis,INTER 
+Francisco Morato,INTER
+Franco da Rocha,INTER
+Guaratinguetá,INTER
+Guarujá,INTER
+Hortolândia,INTER
+Indaiatuba,INTER
+Itanhaém,INTER
+Itapecerica da Serra,INTER
+Itapetininga,INTER
+Itapeva,INTER
+Itapevi,INTER
+Itaquaquecetuba,INTER
+Itatiba,INTER
+Itu,INTER
+Jaboticabal,INTER
+Jacareí,INTER
+Jales,INTER
+Jaú,INTER
+Leme,INTER
+Lins,INTER
+Matão,INTER
+Mauá,INTER
+Mogi Guaçu,INTER
+Moji Mirim,INTER
+Olímpia,INTER
+Ourinhos,INTER
+Penápolis,INTER
+Pindamonhangaba,INTER
+Poá,INTER
+Registro,INTER
+Ribeirão Pires,INTER
+Rio Claro,INTER
+Salto,INTER
+Santa Bárbara DOeste,INTER
+São Caetano do Sul,INTER
+São João da Boa Vista,INTER
+São Roque,INTER
+Sertãozinho,INTER
+Sumaré,INTER
+Suzano,INTER
+Taboão da Serra,INTER
+Tatuí,INTER
+Tupã,INTER
+Ubatuba,INTER
+Valinhos,INTER
+Vinhedo,INTER
+Votuporanga,INTER
+Adamantina,INICIA 
+Aguaí,INICIA
+Águas de Lindóia,INICIA
+Agudos,INICIA
+Altinópolis,INICIA
+Amparo,INICIA
+Angatuba,INICIA
+Aparecida,INICIA 
+Apiaí,INICIA
+Auriflama,INICIA
+Bananal,INICIA
+Bariri,INICIA 
+Barra Bonita,INICIA 
+Batatais,INICIA 
+Bernardino de Campos,INICIA
+Bertioga,INICIA
+Bilac,INICIA
+Boituva,INICIA
+Borborema,INICIA
+Brotas,INICIA
+Buritama,INICIA
+Caçapava,INICIA
+Cachoeira Paulista,INICIA
+Caconde,INICIA
+Cafelândia,INICIA
+Cajuru,INICIA
+Campos do Jordão,INICIA
+Cananéia,INICIA
+Cândido Mota,INICIA
+Capão Bonito,INICIA
+Capivari,INICIA
+Cardoso,INICIA
+Casa Branca,INICIA
+Cerqueira César,INICIA
+Cerquilho,INICIA
+Chavantes,INICIA
+Colina,INICIA
+Conchas,INICIA
+Cordeirópolis,INICIA
+Cosmópolis,INICIA
+Cravinhos,INICIA
+Cruzeiro,INICIA
+Cunha,INICIA
+Descalvado,INICIA
+Dois Córregos,INICIA
+Dracena,INICIA
+Duartina,INICIA
+Eldorado Paulista,INICIA
+Comarca de Eldorado,INICIA
+Espírito Santo do Pinhal,INICIA
+Estrela Doeste,INICIA
+Fartura,INICIA
+Garça,INICIA
+General Salgado,INICIA
+Getulina,INICIA
+Guaíra,INICIA
+Guará,INICIA
+Guararapes,INICIA
+Guariba,INICIA
+Ibitinga,INICIA
+Ibiúna,INICIA
+Igarapava,INICIA
+Iguape,INICIA
+Ilha Solteira,INICIA
+Ipauçu,INICIA
+Ipuã,INICIA
+Itaí,INICIA
+Itapira,INICIA
+Itápolis,INICIA
+Itaporanga,INICIA
+Itararé,INICIA
+Ituverava,INICIA
+Jacupiranga,INICIA
+Jaguariúna,INICIA
+Jardinópolis,INICIA
+José Bonifácio,INICIA
+Junqueirópolis,INICIA
+Juquiá,INICIA
+Laranjal Paulista,INICIA
+Lençóis Paulista,INICIA
+Lorena,INICIA
+Lucélia,INICIA
+Mairinque,INICIA
+Mairiporã,INICIA
+Maracaí,INICIA
+Martinópolis,INICIA
+Miguelópolis,INICIA
+Miracatu,INICIA
+Mirandópolis,INICIA
+Mirante do Paranapanema,INICIA
+Mirassol,INICIA
+Mococa,INICIA
+Mongaguá,INICIA
+Monte Alto,INICIA
+Monte Aprazível,INICIA
+Monte Azul Paulista,INICIA
+Monte Mor,INICIA
+Morro Agudo,INICIA
+Nhandeara,INICIA
+Nova Granada,INICIA
+Nova Odessa,INICIA
+Novo Horizonte,INICIA
+Nuporanga,INICIA
+Orlândia,INICIA
+Osvaldo Cruz,INICIA
+Pacaembu,INICIA
+Palestina,INICIA
+Palmeira Doeste,INICIA
+Palmital,INICIA
+Panorama,INICIA
+Paraguaçu Paulista,INICIA
+Paraibuna,INICIA
+Patrocínio Paulista,INICIA
+Paulo de Faria,INICIA
+Pederneiras,INICIA
+Pedregulho,INICIA
+Pedreira,INICIA
+Pereira Barreto,INICIA
+Peruíbe,INICIA
+Piedade,INICIA
+Piracaia,INICIA
+Piraju,INICIA
+Pirajuí,INICIA
+Pirapozinho,INICIA
+Pirassununga,INICIA
+Piratininga,INICIA
+Pitangueiras,INICIA
+Pompéia,INICIA
+Pontal,INICIA
+Porangaba,INICIA
+Porto Feliz,INICIA
+Porto Ferreira,INICIA
+Potirendaba,INICIA
+Presidente Bernardes,INICIA
+Presidente Epitácio,INICIA
+Presidente Venceslau,INICIA
+Promissão,INICIA
+Quatá,INICIA
+Queluz,INICIA
+Rancharia,INICIA
+Regente Feijó,INICIA
+Ribeirão Bonito,INICIA
+Rosana,INICIA
+Santa Adélia,INICIA
+Santa Branca,INICIA
+Santa Cruz das Palmeiras,INICIA
+Santa Cruz do Rio Pardo,INICIA
+Santa Fé do Sul,INICIA
+Santa Isabel,INICIA
+Santa Rita do Passa Quatro,INICIA
+Santa Rosa de Viterbo,INICIA
+Santana do Parnaíba,INICIA
+Santo Anastácio,INICIA
+São Bento do Sapucaí,INICIA
+São Joaquim da Barra,INICIA
+São José do Rio Pardo,INICIA
+São Luiz do Paraitinga,INICIA
+São Manuel,INICIA
+São Miguel Arcanjo,INICIA
+São Pedro,INICIA
+São Sebastião,INICIA
+São Simão,INICIA
+Serra Negra,INICIA
+Serrana,INICIA
+Socorro,INICIA
+Tambaú,INICIA
+Tanabi,INICIA
+Taquaritinga,INICIA
+Taquarituba,INICIA
+Teodoro Sampaio,INICIA
+Tietê,INICIA
+Tremembé,INICIA
+Tupi Paulista,INICIA
+Urupês,INICIA
+Valparaíso,INICIA
+Vargem Grande do Sul,INICIA
+Várzea Paulista,INICIA
+Viradouro,INICIA
+Votorantim,INICIA
