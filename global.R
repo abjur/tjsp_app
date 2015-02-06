@@ -7,7 +7,7 @@ load("data/coma_m.RData")
 rm_accent <- function (x) gsub("`|\\'", "", iconv(x, to = "ASCII//TRANSLIT"))
 
 fx <- function(x) {ifelse(x==-1, NA, x)}
-dados <- prod_tjsp_spr %>% 
+dados <- prod_tjsp_spr %>%
   mutate(data=as.character(data)) %>%
   mutate_each(funs(fx)) %>%
   mutate(comarca=ifelse(municipio=='SAO SEBASTIAO DA GRAMA', 'SAO JOSE DO RIO PARDO', comarca)) %>%
@@ -61,14 +61,13 @@ tree <- function(hierarquia) {
 
 
 lab_entrancias <- setNames(unique(dados$entrancia), c('Final', 'Inicial', 'Intermediária'))
-lab_tipo_varas <- setNames(unique(dados$tipo_vara), c('Cível', 
-                                                     'Família e Sucessões', 
+lab_tipo_varas <- setNames(unique(dados$tipo_vara), c('Cível',
+                                                     'Família e Sucessões',
                                                      'Fazenda Pública',
-                                                     #'Infância e Juventude', 
-                                                     'Criminal', 
-                                                     #'Juizado Especial Cível', 
+                                                     #'Infância e Juventude',
+                                                     'Criminal',
+                                                     #'Juizado Especial Cível',
                                                      #'Cumulativa',
-                                                     #'Juizado Especial Criminal', 
+                                                     #'Juizado Especial Criminal',
                                                      'Execução Fiscal'))
-  
 
