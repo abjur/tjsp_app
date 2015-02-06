@@ -6,8 +6,8 @@ shinyUI(fluidPage(
 
   # Controles
   absolutePanel(top=0, left=0, fixed=TRUE, actionButton('show1', label='', icon=icon('gear')), style='z-index:100'),
-  tags$script(sprintf("$('#show1').click(function(){$('#div-controls').toggle();})")),
-  div(id="div-controls", class="niveissss", style="margin: 0px 0px 0px 10px;",
+  #tags$script(sprintf("$('#show1').click(function(){$('#div-controls').toggle();})")),
+  div(id="div-controls", class="niveis", style="margin: 0px 0px 0px 10px;",
   absolutePanel(wellPanel(
     selectInput('entrancia', 'Entrância', lab_entrancias, selected='FINAL'),
     selectInput('tipo_vara', 'Tipo de vara', lab_tipo_varas, selected='civel'),
@@ -17,7 +17,7 @@ shinyUI(fluidPage(
 
   # Filtros
   absolutePanel(top=0, right=0, fixed=TRUE, actionButton('show2', label='', icon=icon('tasks')), style='z-index:100'),
-  tags$script(sprintf("$('#show2').click(function(){$('#div-filters').toggle();})")),
+  #tags$script(sprintf("$('#show2').click(function(){$('#div-filters').toggle();})")),
   div(id="div-filters", class="niveis", style="margin: 0px 0px 0px 10px;",
   absolutePanel(wellPanel(dateRangeInput(inputId='corte_temporal',
                                          label='De',
