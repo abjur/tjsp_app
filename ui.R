@@ -41,10 +41,10 @@ shinyUI(fluidPage(
 
   h4('Análise de agrupamento', style='text-align:center'),
   fluidRow(column(7, plotOutput('grafico_grupos', '100%', '600px')),
-           column(5, dataTableOutput('bd_test'))),
+           column(5, dataTableOutput('bd_test')))#,
 
-  h4('Varas da comarca ou foro distrital', style='text-align:center'),
-  fluidRow(column(12, plotOutput('grafico_comarca', '100%', '600px')))#,
+  #h4('Varas da comarca ou foro distrital', style='text-align:center'),
+  #fluidRow(column(12, plotOutput('grafico_comarca', '100%', '600px')))#,
 
   #absolutePanel(verbatimTextOutput('saida'), top='50%', left='50%', draggable=TRUE, class="modal", width=300)
 

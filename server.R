@@ -13,6 +13,20 @@ coloca_na <- function(comarca) {
   return(d)
 }
 
+tabela <- function(d) {
+  infos <- d %>%
+    gather(nm, val, -comarca) %>%
+    mutate(val=prettyNum(val, big.mark='.', decimal.mark=',')) %>%
+    select(-comarca) %>%
+    data.frame
+  names(infos) <- c(d$comarca, '  ')
+  x <- invisible(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
+                 type='html',
+                 include.rownames=FALSE,
+                 html.table.attributes = "class = 'table table-striped'"))
+  x
+}
+
 shinyServer(function(input, output, session) {
 
   # map <- createLeafletMap(session, 'map')
@@ -20,6 +34,20 @@ shinyServer(function(input, output, session) {
 
   dados_mapa <- reactive({
     coma <- comarcas()
+
+    ###
+    d <- municipios %>%
+      distinct(comarca) %>%
+      select(comarca=comarca,
+             `População`=pop_coma,
+             `População urbana`=pop_urb_coma,
+             `Eleitores`=pop_ele_coma,
+             `Renda total`=renda_coma,
+             `IDH médio`=idhm_coma) %>%
+      group_by(comarca) %>%
+      do(ppp = tabela(.))
+
+    ###
 
     if(length(coma) > 0) {
       coma_m <- coma_m %>% filter(id %in% coma)
@@ -32,6 +60,8 @@ shinyServer(function(input, output, session) {
       ungroup %>%
       arrange(id, order)
 
+    aux <- aux %>% left_join(d, c('id' = 'comarca'))
+
     cores <- aux %>%
       filter(!is.na(long)) %>%
       distinct(id) %>%
@@ -41,6 +71,9 @@ shinyServer(function(input, output, session) {
     aux <- aux %>%
       inner_join(cores, 'id') %>%
       data.frame()
+
+    aux[is.na(aux$entrancia), 'ppp'] <- NA
+    aux[is.na(aux$entrancia), 'cor'] <- NA
 
     return(aux)
   })
@@ -54,10 +87,19 @@ shinyServer(function(input, output, session) {
   })
 
   output$map <- renderLeaflet({
+    aux <- dados_mapa()
     m <- map() %>%
-      addPolygons(lng=~long, lat=~lat, layerId=id,
-                  fillColor=~unique(cor), fillOpacity=.9, fill=TRUE,
-                  stroke=TRUE, opacity=1, weight=1, color='black')
+      addPolygons(lng = ~long,
+                  lat = ~lat,
+                  layerId = id,
+                  fillColor = aux$cor,
+                  fillOpacity = .9,
+                  fill = TRUE,
+                  stroke = TRUE,
+                  opacity = 1,
+                  weight = 1,
+                  color = 'black',
+                  popup = aux$ppp)
 
     if(input$distritais) {
       coma <- comarcas()
@@ -376,6 +418,7 @@ shinyServer(function(input, output, session) {
       }
 
     }
+    cat('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     d
   }, options=list(pageLength = 10))
 
