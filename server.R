@@ -20,11 +20,76 @@ tabela <- function(d) {
     select(-comarca) %>%
     data.frame
   names(infos) <- c(d$comarca, '  ')
-  x <- invisible(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
-                 type='html',
-                 include.rownames=FALSE,
-                 html.table.attributes = "class = 'table table-striped'"))
+  x <- print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
+             print.results = FALSE,
+             type='html',
+             include.rownames=FALSE,
+             html.table.attributes = "class = 'table table-striped'")
   x
+}
+
+# vixi <- function() {
+#   #     coma <- comarcas()
+#   coma <- unique(coma_m$id)
+#   ###
+#   d <- municipios %>%
+#     distinct(comarca) %>%
+#     select(comarca=comarca,
+#            `População`=pop_coma,
+#            `População urbana`=pop_urb_coma,
+#            `Eleitores`=pop_ele_coma,
+#            `Renda total`=renda_coma,
+#            `IDH médio`=idhm_coma) %>%
+#     group_by(comarca) %>%
+#     do(ppp = tabela(.)) %>%
+#     ungroup %>%
+#     unnest(ppp) %>%
+#     distinct(comarca)
+#
+#   ###
+#
+#   if(length(coma) > 0) {
+#     coma_m <- coma_m %>% filter(id %in% coma)
+#   }
+#
+#   aux <- coma_m %>%
+#     #filter(entrancia==input$entrancia) %>%
+#     group_by(id) %>%
+#     do(coloca_na(.)) %>%
+#     ungroup %>%
+#     arrange(id, order)
+#
+#   aux <- aux %>% inner_join(d, c('id' = 'comarca'))
+#
+#   cores <- aux %>%
+#     filter(!is.na(long)) %>%
+#     distinct(id) %>%
+#     mutate(cor=brewer.pal(10, "RdYlGn")[as.numeric(factor(regiao))]) %>%
+#     select(id, cor)
+#
+#   aux <- aux %>%
+#     inner_join(cores, 'id') %>%
+#     data.frame(stringsAsFactors = FALSE)
+#
+#   aux[is.na(aux$entrancia), 'ppp'] <- NA
+#   aux[is.na(aux$entrancia), 'cor'] <- NA
+#
+#   aux <- aux %>%
+#     mutate(group = as.character(group),
+#            piece = as.character(piece))
+#   aux
+# }
+# aff <- vixi()
+# save(aff, file = 'aff.RData')
+
+load('aff.RData')
+
+map <- function() {
+  m <- leaflet() %>%
+    addTiles('http://{s}.tiles.mapbox.com/v3/jtrecenti.map-oskm8vhn/{z}/{x}/{y}.png',
+             'Maps by <a href="http://www.mapbox.com/">Mapbox</a>') %>%
+    setView(-48.7706, -22.46558, zoom = 7)
+  m
 }
 
 shinyServer(function(input, output, session) {
@@ -33,84 +98,52 @@ shinyServer(function(input, output, session) {
   # mapa <- fromJSON('data/mapa.geojson')
 
   dados_mapa <- reactive({
+    putz <- coma_m %>% filter(entrancia == input$entrancia) %>%
+      distinct(id) %>% with(id)
+    aux <- aff %>% filter(id %in% putz)
     coma <- comarcas()
-
-    ###
-    d <- municipios %>%
-      distinct(comarca) %>%
-      select(comarca=comarca,
-             `População`=pop_coma,
-             `População urbana`=pop_urb_coma,
-             `Eleitores`=pop_ele_coma,
-             `Renda total`=renda_coma,
-             `IDH médio`=idhm_coma) %>%
-      group_by(comarca) %>%
-      do(ppp = tabela(.))
-
-    ###
-
     if(length(coma) > 0) {
-      coma_m <- coma_m %>% filter(id %in% coma)
+      aux <- aux %>% filter(id %in% coma)
     }
-
-    aux <- coma_m %>%
-      filter(entrancia==input$entrancia) %>%
-      group_by(id) %>%
-      do(coloca_na(.)) %>%
-      ungroup %>%
-      arrange(id, order)
-
-    aux <- aux %>% left_join(d, c('id' = 'comarca'))
-
-    cores <- aux %>%
-      filter(!is.na(long)) %>%
-      distinct(id) %>%
-      mutate(cor=brewer.pal(10, "RdYlGn")[as.numeric(factor(regiao))]) %>%
-      select(id, cor)
-
-    aux <- aux %>%
-      inner_join(cores, 'id') %>%
-      data.frame()
-
-    aux[is.na(aux$entrancia), 'ppp'] <- NA
-    aux[is.na(aux$entrancia), 'cor'] <- NA
-
     return(aux)
   })
 
-  map <- reactive({
-    m <- leaflet(dados_mapa()) %>%
-      addTiles('http://{s}.tiles.mapbox.com/v3/jtrecenti.map-oskm8vhn/{z}/{x}/{y}.png',
-               'Maps by <a href="http://www.mapbox.com/">Mapbox</a>') %>%
-      setView(-48.7706, -22.46558, zoom = 7)
-    m
-  })
-
   output$map <- renderLeaflet({
-    aux <- dados_mapa()
-    m <- map() %>%
-      addPolygons(lng = ~long,
-                  lat = ~lat,
-                  layerId = id,
-                  fillColor = aux$cor,
-                  fillOpacity = .9,
-                  fill = TRUE,
-                  stroke = TRUE,
-                  opacity = 1,
-                  weight = 1,
-                  color = 'black',
-                  popup = aux$ppp)
-
-    if(input$distritais) {
-      coma <- comarcas()
-      d <- dados %>%
-        filter(distrital,
-               entrancia==input$entrancia,
-               (length(coma)==0 | comarca %in% coma)) %>%
-        select(municipio, lat, lon) %>%
-        distinct
-      m <- m %>% addMarkers(~lon, ~lat, data=d)
+    #invalidateLater(10000, session)
+    putz <- coma_m %>% filter(entrancia == input$entrancia) %>%
+    distinct(id) %>% with(id)
+    aux <- aff %>% filter(id %in% putz)
+    coma <- comarcas()
+    if(length(coma) > 0) {
+      aux <- aux %>% filter(id %in% coma)
     }
+
+    m <- map()
+    if(nrow(aux) > 0) {
+      unicos <- distinct(filter(aux, !is.na(entrancia)), id)
+      m <- addPolygons(m,
+                       lng = aux$long,
+                       lat = aux$lat,
+                       layerId = unicos$id,
+                       fillColor = unicos$cor,
+                       fillOpacity = .9,
+                       fill = TRUE,
+                       stroke = TRUE,
+                       opacity = 1,
+                       weight = 1,
+                       color = 'black',
+                       popup = unicos$ppp)
+    }
+
+#     if(input$distritais) {
+#       coma <- comarcas()
+#       d <- dados %>%
+#         filter(distrital, str_detect(entrancia, input$entrancia),
+#                (length(coma)==0 | comarca %in% coma)) %>%
+#         select(municipio, lat, lon) %>%
+#         distinct
+#       m <- m %>% addMarkers(~lon, ~lat, data=d)
+#     }
     m
   })
 
@@ -128,24 +161,28 @@ shinyServer(function(input, output, session) {
   })
 
   comarcas <- reactive({
-    coma <- unlist(sapply(input$tree, function(x) {
-      sapply(x, function(y) {
-        sapply(y, function(z) {
-          if(!is.null(attributes(z)$stselected)) z
-        })
-      })
-    }))
-
-    if(length(coma) > 0) {
-      coma <- str_match(names(coma), '\\.([^.]+$)')[,2]
-    }
+#     coma <- unlist(sapply(input$tree, function(x) {
+#       sapply(x, function(y) {
+#         sapply(y, function(z) {
+#           if(!is.null(attributes(z)$stselected)) z
+#         })
+#       })
+#     }))
+#     if(length(coma) > 0) {
+#       coma <- str_match(names(coma), '\\.([^.]+$)')[,2]
+#     }
+#     dput(input$tree, file = 'nossa.R')
+#     return(coma)
+    coma <- pega_coma(input$tree)
     return(coma)
   })
 
   output$tree <- renderTree({
     hierarquia <- dados %>%
-      select(regiao, circunscricao, comarca) %>%
-      distinct
+      select(regiao, circunscricao, comarca, entrancia) %>%
+      distinct(regiao, circunscricao, comarca) %>%
+      #filter(entrancia == input$entrancia) %>%
+      select(regiao, circunscricao, comarca)
     tree(hierarquia)
   })
 
@@ -259,71 +296,71 @@ shinyServer(function(input, output, session) {
   })
 
 
-#   observe({
-#
-#     ev <- input$map_shape_click
-#
-#     if(!is.null(ev)) {
-#       if(str_length(ev$id) > 1) {
-#
-#       d <- coma_m %>%
-#         filter(id==ev$id) %>%
-#         group_by(id) %>%
-#         summarise(lat=mean(lat), long=mean(long)) %>%
-#         ungroup
-#
-#       infos <- municipios %>%
-#         filter(comarca==d$id) %>%
-#         distinct(comarca) %>%
-#         transmute(comarca=comarca, População=pop_coma, `População urbana`=pop_urb_coma,
-#                   `Eleitores`=pop_ele_coma,
-#                   `Renda total`=renda_coma, `IDH médio`=idhm_coma) %>%
-#         gather(nm, val, -comarca) %>%
-#         mutate(val=prettyNum(val, big.mark='.', decimal.mark=',')) %>%
-#         select(-comarca) %>% data.frame
-#
-#       names(infos) <- c('Comarca', d$id)
-#
-#       content <- as.character(tagList(
-#         HTML(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
-#                    type='html',
-#                    include.rownames=FALSE,
-#                    html.table.attributes = "class = 'table table-striped'"))
-#       ))
-#
-#       map$showPopup(d$lat, d$long, content, d$id)
-#     }}
-#   })
+  #   observe({
+  #
+  #     ev <- input$map_shape_click
+  #
+  #     if(!is.null(ev)) {
+  #       if(str_length(ev$id) > 1) {
+  #
+  #       d <- coma_m %>%
+  #         filter(id==ev$id) %>%
+  #         group_by(id) %>%
+  #         summarise(lat=mean(lat), long=mean(long)) %>%
+  #         ungroup
+  #
+  #       infos <- municipios %>%
+  #         filter(comarca==d$id) %>%
+  #         distinct(comarca) %>%
+  #         transmute(comarca=comarca, População=pop_coma, `População urbana`=pop_urb_coma,
+  #                   `Eleitores`=pop_ele_coma,
+  #                   `Renda total`=renda_coma, `IDH médio`=idhm_coma) %>%
+  #         gather(nm, val, -comarca) %>%
+  #         mutate(val=prettyNum(val, big.mark='.', decimal.mark=',')) %>%
+  #         select(-comarca) %>% data.frame
+  #
+  #       names(infos) <- c('Comarca', d$id)
+  #
+  #       content <- as.character(tagList(
+  #         HTML(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
+  #                    type='html',
+  #                    include.rownames=FALSE,
+  #                    html.table.attributes = "class = 'table table-striped'"))
+  #       ))
+  #
+  #       map$showPopup(d$lat, d$long, content, d$id)
+  #     }}
+  #   })
 
 
-#   observe({
-#
-#     ev <- input$map_marker_click
-#     if(!is.null(ev)) {
-#
-#       d <- municipios %>%
-#         filter(municipio==ev$id) %>%
-#         distinct(municipio) %>%
-#         select(municipio, `População`=pop, `População urbana`=pop_urb, `Eleitores`=pop_ele,
-#                `Renda total`=renda, `IDH municipal`=idhm, lat, lon)
-#
-#       infos <- d %>%
-#         select(-lat, -lon) %>%
-#         gather(nm, val, -municipio) %>%
-#         mutate(val=prettyNum(val, big.mark='.', decimal.mark=',')) %>%
-#         select(-municipio) %>% data.frame
-#
-#       names(infos) <- c('Município', ev$id)
-#
-#       content <- as.character(tagList(
-#         HTML(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
-#                    type='html',
-#                    include.rownames=FALSE,
-#                    html.table.attributes = "class = 'table table-striped'"))
-#       ))
-#       map$showPopup((d$lat), d$lon, content, ev$id)
-#     }
-#   })
+  #   observe({
+  #
+  #     ev <- input$map_marker_click
+  #     if(!is.null(ev)) {
+  #
+  #       d <- municipios %>%
+  #         filter(municipio==ev$id) %>%
+  #         distinct(municipio) %>%
+  #         select(municipio, `População`=pop, `População urbana`=pop_urb, `Eleitores`=pop_ele,
+  #                `Renda total`=renda, `IDH municipal`=idhm, lat, lon)
+  #
+  #       infos <- d %>%
+  #         select(-lat, -lon) %>%
+  #         gather(nm, val, -municipio) %>%
+  #         mutate(val=prettyNum(val, big.mark='.', decimal.mark=',')) %>%
+  #         select(-municipio) %>% data.frame
+  #
+  #       names(infos) <- c('Município', ev$id)
+  #
+  #       content <- as.character(tagList(
+  #         HTML(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
+  #                    type='html',
+  #                    include.rownames=FALSE,
+  #                    html.table.attributes = "class = 'table table-striped'"))
+  #       ))
+  #       map$showPopup((d$lat), d$lon, content, ev$id)
+  #     }
+  #   })
 
 
   agrupamento <- reactive({
@@ -418,7 +455,6 @@ shinyServer(function(input, output, session) {
       }
 
     }
-    cat('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     d
   }, options=list(pageLength = 10))
 
@@ -477,7 +513,7 @@ shinyServer(function(input, output, session) {
                   r_sent_func=sum(p_sent)/sum(p_func)) %>%
         ungroup %>%
         gather(prod, valor, -data, -grupo)
-        aux$prod <- factor(aux$prod)
+      aux$prod <- factor(aux$prod)
       levels(aux$prod) <- sort(c('Sentenças por funcionário',
                                  'Sentenças por processo'))
       aux$prod <- as.character(aux$prod)
@@ -515,56 +551,56 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  nc <- 0
-  nc1 <- 0
-  output$grafico_comarca <- renderPlot({
-
-    ev0 <- input$map_click
-    ev <- input$map_shape_click
-    ev1 <- input$map_marker_click
-
-    if(!is.null(ev)) {
-      if(ev[['.nonce']]==nc) {
-        ev <- NULL
-      } else {
-        nc <<- ev[['.nonce']]
-      }
-    }
-
-    if(!is.null(ev1) & input$distritais) {
-      if(ev1[['.nonce']]==nc1) {
-        ev1 <- NULL
-      } else {
-        nc1 <<- ev1[['.nonce']]
-      }
-    }
-
-    validate(need(!is.null(ev) | !is.null(ev1), 'Por favor, clique em uma comarca ou município com foro distrital.'))
-
-    if(!is.null(ev)) {
-      aux <- tidy() %>%
-        filter(comarca==ev$id)
-    } else if(!is.null(ev1)) {
-      aux <- tidy() %>%
-        separate(muni_vara, c('municipio', 'nm_vara'), sep='_') %>%
-        filter(municipio==ev1$id)
-    }
-
-    validate(need(nrow(aux) > 0, 'Por favor, clique em uma comarca ou município com foro distrital.'))
-
-    if(!is.null(ev) | !is.null(ev1)) {
-      p <- aux %>%
-        select(data, id_vara, starts_with('p_'), starts_with('r_')) %>%
-        gather(prod, valor, -data, -id_vara) %>%
-        ggplot(aes(x=as.Date(data), y=valor, colour=id_vara)) +
-        facet_wrap(~prod, scales='free_y') +
-        geom_path(alpha=.9, alpha=.5) +
-        scale_x_date(breaks=date_breaks('3 months'), labels=date_format('%m-%Y')) +
-        guides(colour=F) +
-        theme_bw() +
-        labs(x='', y='Valor')+
-        theme(axis.text.x=element_text(angle=45, hjust=1))
-      return(p)
-    }
-  })
+  #   nc <- 0
+  #   nc1 <- 0
+  #   output$grafico_comarca <- renderPlot({
+  #
+  #     ev0 <- input$map_click
+  #     ev <- input$map_shape_click
+  #     ev1 <- input$map_marker_click
+  #
+  #     if(!is.null(ev)) {
+  #       if(ev[['.nonce']]==nc) {
+  #         ev <- NULL
+  #       } else {
+  #         nc <<- ev[['.nonce']]
+  #       }
+  #     }
+  #
+  #     if(!is.null(ev1) & input$distritais) {
+  #       if(ev1[['.nonce']]==nc1) {
+  #         ev1 <- NULL
+  #       } else {
+  #         nc1 <<- ev1[['.nonce']]
+  #       }
+  #     }
+  #
+  #     validate(need(!is.null(ev) | !is.null(ev1), 'Por favor, clique em uma comarca ou município com foro distrital.'))
+  #
+  #     if(!is.null(ev)) {
+  #       aux <- tidy() %>%
+  #         filter(comarca==ev$id)
+  #     } else if(!is.null(ev1)) {
+  #       aux <- tidy() %>%
+  #         separate(muni_vara, c('municipio', 'nm_vara'), sep='_') %>%
+  #         filter(municipio==ev1$id)
+  #     }
+  #
+  #     validate(need(nrow(aux) > 0, 'Por favor, clique em uma comarca ou município com foro distrital.'))
+  #
+  #     if(!is.null(ev) | !is.null(ev1)) {
+  #       p <- aux %>%
+  #         select(data, id_vara, starts_with('p_'), starts_with('r_')) %>%
+  #         gather(prod, valor, -data, -id_vara) %>%
+  #         ggplot(aes(x=as.Date(data), y=valor, colour=id_vara)) +
+  #         facet_wrap(~prod, scales='free_y') +
+  #         geom_path(alpha=.9, alpha=.5) +
+  #         scale_x_date(breaks=date_breaks('3 months'), labels=date_format('%m-%Y')) +
+  #         guides(colour=F) +
+  #         theme_bw() +
+  #         labs(x='', y='Valor')+
+  #         theme(axis.text.x=element_text(angle=45, hjust=1))
+  #       return(p)
+  #     }
+  #   })
 })
