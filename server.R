@@ -20,10 +20,11 @@ tabela <- function(d) {
     select(-comarca) %>%
     data.frame
   names(infos) <- c(d$comarca, '  ')
-  x <- invisible(print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
-                 type='html',
-                 include.rownames=FALSE,
-                 html.table.attributes = "class = 'table table-striped'"))
+  x <- print(xtable(infos, align="lp{3cm}c", digits=c(0,0,0)),
+             print.results = FALSE,
+             type='html',
+             include.rownames=FALSE,
+             html.table.attributes = "class = 'table table-striped'")
   x
 }
 
@@ -79,7 +80,7 @@ shinyServer(function(input, output, session) {
   })
 
   map <- reactive({
-    m <- leaflet(dados_mapa()) %>%
+    m <- leaflet() %>%
       addTiles('http://{s}.tiles.mapbox.com/v3/jtrecenti.map-oskm8vhn/{z}/{x}/{y}.png',
                'Maps by <a href="http://www.mapbox.com/">Mapbox</a>') %>%
       setView(-48.7706, -22.46558, zoom = 7)
@@ -89,9 +90,10 @@ shinyServer(function(input, output, session) {
   output$map <- renderLeaflet({
     aux <- dados_mapa()
     m <- map() %>%
-      addPolygons(lng = ~long,
-                  lat = ~lat,
-                  layerId = id,
+      addPolygons(data = aux,
+                  lng = aux$long,
+                  lat = aux$lat,
+                  layerId = aux$id,
                   fillColor = aux$cor,
                   fillOpacity = .9,
                   fill = TRUE,
@@ -102,6 +104,7 @@ shinyServer(function(input, output, session) {
                   popup = aux$ppp)
 
     if(input$distritais) {
+      cat('distritais', '\n')
       coma <- comarcas()
       d <- dados %>%
         filter(distrital,
@@ -111,6 +114,7 @@ shinyServer(function(input, output, session) {
         distinct
       m <- m %>% addMarkers(~lon, ~lat, data=d)
     }
+    cat('codigo do mapa acaba aqui', '\n')
     m
   })
 
@@ -418,7 +422,7 @@ shinyServer(function(input, output, session) {
       }
 
     }
-    cat('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    cat('data.frame', '\n')
     d
   }, options=list(pageLength = 10))
 
@@ -515,56 +519,56 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  nc <- 0
-  nc1 <- 0
-  output$grafico_comarca <- renderPlot({
-
-    ev0 <- input$map_click
-    ev <- input$map_shape_click
-    ev1 <- input$map_marker_click
-
-    if(!is.null(ev)) {
-      if(ev[['.nonce']]==nc) {
-        ev <- NULL
-      } else {
-        nc <<- ev[['.nonce']]
-      }
-    }
-
-    if(!is.null(ev1) & input$distritais) {
-      if(ev1[['.nonce']]==nc1) {
-        ev1 <- NULL
-      } else {
-        nc1 <<- ev1[['.nonce']]
-      }
-    }
-
-    validate(need(!is.null(ev) | !is.null(ev1), 'Por favor, clique em uma comarca ou município com foro distrital.'))
-
-    if(!is.null(ev)) {
-      aux <- tidy() %>%
-        filter(comarca==ev$id)
-    } else if(!is.null(ev1)) {
-      aux <- tidy() %>%
-        separate(muni_vara, c('municipio', 'nm_vara'), sep='_') %>%
-        filter(municipio==ev1$id)
-    }
-
-    validate(need(nrow(aux) > 0, 'Por favor, clique em uma comarca ou município com foro distrital.'))
-
-    if(!is.null(ev) | !is.null(ev1)) {
-      p <- aux %>%
-        select(data, id_vara, starts_with('p_'), starts_with('r_')) %>%
-        gather(prod, valor, -data, -id_vara) %>%
-        ggplot(aes(x=as.Date(data), y=valor, colour=id_vara)) +
-        facet_wrap(~prod, scales='free_y') +
-        geom_path(alpha=.9, alpha=.5) +
-        scale_x_date(breaks=date_breaks('3 months'), labels=date_format('%m-%Y')) +
-        guides(colour=F) +
-        theme_bw() +
-        labs(x='', y='Valor')+
-        theme(axis.text.x=element_text(angle=45, hjust=1))
-      return(p)
-    }
-  })
+#   nc <- 0
+#   nc1 <- 0
+#   output$grafico_comarca <- renderPlot({
+#
+#     ev0 <- input$map_click
+#     ev <- input$map_shape_click
+#     ev1 <- input$map_marker_click
+#
+#     if(!is.null(ev)) {
+#       if(ev[['.nonce']]==nc) {
+#         ev <- NULL
+#       } else {
+#         nc <<- ev[['.nonce']]
+#       }
+#     }
+#
+#     if(!is.null(ev1) & input$distritais) {
+#       if(ev1[['.nonce']]==nc1) {
+#         ev1 <- NULL
+#       } else {
+#         nc1 <<- ev1[['.nonce']]
+#       }
+#     }
+#
+#     validate(need(!is.null(ev) | !is.null(ev1), 'Por favor, clique em uma comarca ou município com foro distrital.'))
+#
+#     if(!is.null(ev)) {
+#       aux <- tidy() %>%
+#         filter(comarca==ev$id)
+#     } else if(!is.null(ev1)) {
+#       aux <- tidy() %>%
+#         separate(muni_vara, c('municipio', 'nm_vara'), sep='_') %>%
+#         filter(municipio==ev1$id)
+#     }
+#
+#     validate(need(nrow(aux) > 0, 'Por favor, clique em uma comarca ou município com foro distrital.'))
+#
+#     if(!is.null(ev) | !is.null(ev1)) {
+#       p <- aux %>%
+#         select(data, id_vara, starts_with('p_'), starts_with('r_')) %>%
+#         gather(prod, valor, -data, -id_vara) %>%
+#         ggplot(aes(x=as.Date(data), y=valor, colour=id_vara)) +
+#         facet_wrap(~prod, scales='free_y') +
+#         geom_path(alpha=.9, alpha=.5) +
+#         scale_x_date(breaks=date_breaks('3 months'), labels=date_format('%m-%Y')) +
+#         guides(colour=F) +
+#         theme_bw() +
+#         labs(x='', y='Valor')+
+#         theme(axis.text.x=element_text(angle=45, hjust=1))
+#       return(p)
+#     }
+#   })
 })
