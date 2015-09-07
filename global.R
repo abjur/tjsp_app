@@ -59,6 +59,22 @@ tree <- function(hierarquia) {
   lista
 }
 
+pega_coma <- function(tr) {
+  unl <- unlist(tr)
+  cinco  <- unl[str_count(names(unl), '\\.') == 5]
+  seis   <- unl[str_count(names(unl), '\\.') == 6]
+  selected <- seis[str_detect(names(seis), 'selected')]
+  nm_selected <- gsub('\\.state\\.selected', '',
+                      names(selected[selected == 'TRUE']))
+  nm <- gsub('\\.text', '', names(cinco))
+  if(length(nm) > 0) {
+    names(cinco) <- nm
+    result <- as.character(cinco[names(cinco) %in% nm_selected])
+    return(result)
+  }
+  return(character(0))
+}
+
 
 lab_entrancias <- setNames(unique(dados$entrancia), c('Final', 'Inicial', 'Intermediária'))
 lab_tipo_varas <- setNames(unique(dados$tipo_vara), c('Cível',

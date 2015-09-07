@@ -9,12 +9,12 @@ shinyUI(fluidPage(
   tags$script(sprintf("$('#show1').click(function(){$('#div-controls').toggle();})")),
 
   div(id="div-controls", class="", style="margin: 0px 0px 0px 10px;",
-    absolutePanel(wellPanel(
-      selectInput('entrancia', 'Entrância', lab_entrancias, selected='FINAL'),
-      selectInput('tipo_vara', 'Tipo de vara', lab_tipo_varas, selected='civel'),
-      numericInput('kmeans', 'Quantos grupos', value=5, min=1, max=5, step=1),
-      checkboxInput('distritais', 'Mostrar municípios com foro distrital?', value=FALSE)),
-      top=20, left=100, width=200, style='z-index:10;', draggable=TRUE)
+      absolutePanel(wellPanel(
+        selectInput('entrancia', 'Entrância', lab_entrancias, selected='FINAL'),
+        selectInput('tipo_vara', 'Tipo de vara', lab_tipo_varas, selected='civel'),
+        numericInput('kmeans', 'Quantos grupos', value=2, min=1, max=5, step=1),
+        checkboxInput('distritais', 'Mostrar municípios com foro distrital?', value=FALSE)),
+        top=20, left=100, width=200, style='z-index:10;', draggable=TRUE)
   ),
 
   # Filtros
@@ -22,14 +22,14 @@ shinyUI(fluidPage(
   tags$script(sprintf("$('#show2').click(function(){$('#div-filters').toggle();})")),
 
   div(id="div-filters", class="niveis", style="margin: 0px 0px 0px 10px;",
-    absolutePanel(wellPanel(
-      dateRangeInput(inputId='corte_temporal', label='De',
-                     min='2011-09-01', max='2014-07-01',
-                     start='2011-09-01', end='2014-07-01',
-                     format='dd/mm/yyyy', separator='até', language='pt-BR'),
-      h5("Selecionar comarcas"),
-      shinyTree("tree", checkbox=TRUE, search=TRUE)),
-      top=20, width=300, left='70%', style='z-index:10;', draggable=TRUE)
+      absolutePanel(wellPanel(
+        dateRangeInput(inputId='corte_temporal', label='De',
+                       min='2011-09-01', max='2014-07-01',
+                       start='2011-09-01', end='2014-07-01',
+                       format='dd/mm/yyyy', separator='até', language='pt-BR'),
+        h5("Selecionar comarcas"),
+        shinyTree("tree", checkbox=TRUE, search=TRUE)),
+        top=20, width=300, left='70%', style='z-index:10;', draggable=TRUE)
   ),
 
   fluidRow(h3('GeoVis TJSP', style='text-align:center')),
