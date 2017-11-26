@@ -25,6 +25,11 @@ shiny::runApp()
 
 You can also see it running accessing [this link](http://52.71.228.16:3838/waze/).
 
+## Related projects
+
+- https://github.com/abjur/prodTJSP: Web scraper to download productivity data from TJSP
+- https://github.com/abjur/abjMaps: Maps for administrative regions, comarcas and circunscrições.
+
 ## TODO
 
 - [ ] cron job to update monthly
