@@ -10,7 +10,7 @@ library(plotly)
 library(shinyTree)
 
 # setup ------------------------------------------------------------------------
-d_sf <- read_rds("data/d_sf.rds")
+d_sf <- read_rds("data/d_sf_min.rds")
 prod_tidy <- read_rds("data/prod_tidy.rds")
 
 dd <- distinct(prod_tidy, regiao, circunscricao, comarca)
