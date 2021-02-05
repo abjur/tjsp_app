@@ -2,6 +2,8 @@
 
 This is a shiny app, *a.k.a.* Judicial Waze. 
 
+![](screenshot.png)
+
 Given a particular filter, we make a cluster analysis to group courts with similar productivity patterns. This app can be used to compare groups of courts that are more or less productive based. 
 
 To run this app, you will need to install the following packages
