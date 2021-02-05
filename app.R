@@ -4,7 +4,6 @@
 library(shiny)
 library(leaflet)
 library(tidyverse)
-library(rlang)
 library(sf)
 library(plotly)
 library(shinyTree)
@@ -64,11 +63,10 @@ ui <- fluidPage(
 # Server -----------------------------------------------------------------------
 leaflet_sf <- function(.data_sf, prod_tidy, agreg) {
   pal <- colorQuantile("RdBu", NULL)
-  tile <- "http://{s}.tiles.mapbox.com/v3/jtrecenti.map-oskm8vhn/{z}/{x}/{y}.png"
   d <- .data_sf$sf[[agreg]]
   if (nrow(d) == 0) {
     l <- leaflet() %>%
-      addTiles(tile) %>%
+      leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron) %>%
       fitBounds(-52, -22, -46, -23)
     return(l)
   }
@@ -89,7 +87,7 @@ leaflet_sf <- function(.data_sf, prod_tidy, agreg) {
   d %>%
     as("Spatial") %>%
     leaflet() %>%
-    addTiles(tile) %>%
+    leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron) %>%
     addPolygons(
       color = "black",
       weight = 1.5,
